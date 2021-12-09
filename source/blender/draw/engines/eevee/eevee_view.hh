@@ -76,6 +76,8 @@ class ShadingView {
   GPUTexture *depth_tx_ = nullptr;
   GPUTexture *postfx_tx_ = nullptr;
 
+  StructBuffer<ViewData> data_;
+
   /** Main views is created from the camera (or is from the viewport). It is not jittered. */
   DRWView *main_view_ = nullptr;
   /** Sub views is jittered versions or the main views. This allows jitter updates without trashing

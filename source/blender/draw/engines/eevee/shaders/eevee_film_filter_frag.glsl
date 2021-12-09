@@ -23,6 +23,11 @@ layout(std140) uniform film_block
   FilmData film;
 };
 
+layout(std140) uniform view_block
+{
+  ViewData view;
+};
+
 uniform sampler2D input_tx;
 uniform sampler2D data_tx;
 uniform sampler2D weight_tx;

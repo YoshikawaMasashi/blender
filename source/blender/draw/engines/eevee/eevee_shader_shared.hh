@@ -164,6 +164,22 @@ struct CameraData {
 };
 BLI_STATIC_ASSERT_ALIGN(CameraData, 16)
 
+
+enum ePanoViewDirection : uint32_t {
+    POS_X = 0u,
+    NEG_X = 1u,
+    POS_Y = 2u,
+    NEG_Y = 3u,
+    POS_Z = 4u,
+    NEG_Z = 5u
+};
+
+struct ViewData {
+  ePanoViewDirection pano_view_direction;
+  int _pad0, _pad1, _pad2;
+};
+BLI_STATIC_ASSERT_ALIGN(ViewData, 16)
+
 /** \} */
 
 /* -------------------------------------------------------------------- */

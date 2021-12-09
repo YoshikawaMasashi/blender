@@ -93,7 +93,7 @@ class Film {
   void sync(void);
   void end_sync(void);
 
-  void accumulate(GPUTexture *input, const DRWView *view);
+  void accumulate(GPUTexture *input, const DRWView *view, const StructBuffer<ViewData> *view_data);
 
   void resolve_viewport(GPUFrameBuffer *target);
 

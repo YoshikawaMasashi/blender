@@ -63,6 +63,25 @@ void ShadingView::sync(ivec2 render_extent_)
     is_enabled_ = (StringRefNull(name_) == "negZ_view");
   }
 
+  if (StringRefNull(name_) == "posX_view") {
+    data_.pano_view_direction = POS_X;
+  }
+  else if (StringRefNull(name_) == "negX_view") {
+    data_.pano_view_direction = NEG_X;
+  }
+  else if (StringRefNull(name_) == "posY_view") {
+    data_.pano_view_direction = POS_Y;
+  }
+  else if (StringRefNull(name_) == "negY_view") {
+    data_.pano_view_direction = NEG_Y;
+  }
+  else if (StringRefNull(name_) == "posZ_view") {
+    data_.pano_view_direction = POS_Z;
+  }
+  else if (StringRefNull(name_) == "negZ_view") {
+    data_.pano_view_direction = NEG_Z;
+  }
+
   if (!is_enabled_) {
     return;
   }
@@ -145,7 +164,7 @@ void ShadingView::render(void)
   velocity_.render(depth_tx_);
 
   if (inst_.render_passes.vector) {
-    inst_.render_passes.vector->accumulate(velocity_.camera_vectors_get(), sub_view_);
+    inst_.render_passes.vector->accumulate(velocity_.camera_vectors_get(), sub_view_, &data_);
   }
 
   GPUTexture *final_radiance_tx = render_post(combined_tx_);
@@ -156,14 +175,14 @@ void ShadingView::render(void)
     inst_.shading_passes.debug_culling.render(depth_tx_);
 
     // inst_.render_passes.debug_culling->accumulate(debug_tx_, sub_view_);
-    inst_.render_passes.combined->accumulate(postfx_tx_, sub_view_);
+    inst_.render_passes.combined->accumulate(postfx_tx_, sub_view_, &data_);
   }
   else if (inst_.render_passes.combined) {
-    inst_.render_passes.combined->accumulate(final_radiance_tx, sub_view_);
+    inst_.render_passes.combined->accumulate(final_radiance_tx, sub_view_, &data_);
   }
 
   if (inst_.render_passes.depth) {
-    inst_.render_passes.depth->accumulate(depth_tx_, sub_view_);
+    inst_.render_passes.depth->accumulate(depth_tx_, sub_view_, &data_);
   }
 
   DRW_stats_group_end();

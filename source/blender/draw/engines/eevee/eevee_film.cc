@@ -177,9 +177,25 @@ void Film::end_sync()
   }
 }
 
-void Film::accumulate(GPUTexture *input, const DRWView *view)
+void Film::accumulate(GPUTexture *input, const DRWView *view, const StructBuffer<ViewData> *view_data)
 {
   input_tx_ = input;
+
+  char full_name[32];
+  eGPUSamplerState no_filter = GPU_SAMPLER_DEFAULT;
+  {
+    SNPRINTF(full_name, "Film.%s.Accumulate", name_.c_str());
+    accumulate_ps_ = DRW_pass_create(full_name, DRW_STATE_WRITE_COLOR);
+    GPUShader *sh = inst_.shaders.static_shader_get(FILM_FILTER);
+    DRWShadingGroup *grp = DRW_shgroup_create(sh, accumulate_ps_);
+    DRW_shgroup_uniform_block(grp, "film_block", data_.ubo_get());
+    DRW_shgroup_uniform_block(grp, "camera_block", inst_.camera.ubo_get());
+    DRW_shgroup_uniform_block(grp, "view_block", view_data->ubo_get());
+    DRW_shgroup_uniform_texture_ref_ex(grp, "input_tx", &input_tx_, no_filter);
+    DRW_shgroup_uniform_texture_ref_ex(grp, "data_tx", &data_tx_[0], no_filter);
+    DRW_shgroup_uniform_texture_ref_ex(grp, "weight_tx", &weight_tx_[0], no_filter);
+    DRW_shgroup_call_procedural_triangles(grp, NULL, 1);
+  }
 
   DRW_view_set_active(view);
 
