@@ -51,6 +51,7 @@ void main(void)
   if (camera.filter_size < 1.0 || !film_is_color_data(film)) {
     film_process_sample(camera,
                         film,
+                        view,
                         ProjectionMatrix,
                         ProjectionMatrixInverse,
                         input_tx,
@@ -62,6 +63,7 @@ void main(void)
     for (int i = 0; i < 5; i++) {
       film_process_sample(camera,
                           film,
+                          view,
                           ProjectionMatrix,
                           ProjectionMatrixInverse,
                           input_tx,
@@ -74,6 +76,7 @@ void main(void)
     for (int i = 0; i < 9; i++) {
       film_process_sample(camera,
                           film,
+                          view,
                           ProjectionMatrix,
                           ProjectionMatrixInverse,
                           input_tx,
@@ -89,6 +92,7 @@ void main(void)
       for (float y = -extent; y < extent; y++) {
         film_process_sample(camera,
                             film,
+                            view,
                             ProjectionMatrix,
                             ProjectionMatrixInverse,
                             input_tx,

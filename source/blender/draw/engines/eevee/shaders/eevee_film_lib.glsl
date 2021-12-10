@@ -95,8 +95,33 @@ vec2 film_sample_to_camera_uv(FilmData film, vec2 sample_co)
   return sample_co * film.uv_scale + film.uv_bias;
 }
 
+vec3 camera_panoramic_view(vec3 vV, ViewData view) {
+  switch (view.pano_view_direction) {
+    case POS_X:
+      vV = vec3(-vV.z, -vV.y, -vV.x);
+      break;
+    case NEG_X:
+      vV = vec3(vV.z, -vV.y, vV.x);
+      break;
+    case POS_Y:
+      vV = vec3(vV.x, vV.z, -vV.y);
+      break;
+    case NEG_Y:
+      vV = vec3(vV.x, -vV.z, vV.y);
+      break;
+    case POS_Z:
+      vV = vec3(vV.x, -vV.y, -vV.z);
+      break;
+    case NEG_Z:
+      vV = vec3(-vV.x, -vV.y, vV.z);
+      break;
+  }
+  return vV;
+}
+
 void film_process_sample(CameraData camera,
                          FilmData film,
+                         ViewData view,
                          mat4 input_persmat,
                          mat4 input_persinv,
                          sampler2D input_tx,
@@ -111,6 +136,9 @@ void film_process_sample(CameraData camera,
   /* Pixels outside of projection range. */
   if (vV_dst == vec3(0.0)) {
     return;
+  }
+  if (camera.type == CAMERA_PANO_EQUIRECT) {
+    vV_dst = camera_panoramic_view(vV_dst, view);
   }
 
   bool is_persp = camera.type != CAMERA_ORTHO;

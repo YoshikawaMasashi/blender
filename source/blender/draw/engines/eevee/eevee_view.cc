@@ -82,6 +82,8 @@ void ShadingView::sync(ivec2 render_extent_)
     data_.pano_view_direction = NEG_Z;
   }
 
+  data_.push_update();
+
   if (!is_enabled_) {
     return;
   }
